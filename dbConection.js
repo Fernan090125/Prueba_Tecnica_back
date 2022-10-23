@@ -1,15 +1,19 @@
 var mysql = require('mysql');
-var conexion= mysql.createConnection({
+require('dotenv').config()
+
+var pool= mysql.createPool({
     host : 'localhost',
-    database : 'empleados',
-    user : 'USUARIO',
-    password : 'PASS',
+    database : 'aimedgeapps',
+    user : process.env.DATABASEUSER,
+    password : process.env.DATABASEPASS,
 });
 
-conexion.connect(function(err) {
-    if (err) {
-        console.error('Error de conexion: ' + err.stack);
-        return;
-    }
-    console.log('Conectado con el identificador ' + conexion.threadId);
-});
+
+pool.getConnection((err,connection)=> {
+    if(err)
+    throw err;
+    console.log('Database connected successfully');
+    connection.release();
+  });
+
+module.exports = pool;
