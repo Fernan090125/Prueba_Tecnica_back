@@ -23,14 +23,13 @@ invoceController.getInvoice = async (req, res) => {
         db.query(
           "SELECT * FROM soldproducts where invoiceID=" + req.params["id"],
           (err2, data2) => {
-            if(!err2){
-                data[0].products=data2
-                res.json({
-                    response: data,
-                  });
-                
-            }else{
-                console.log(err2)
+            if (!err2) {
+              data[0].products = data2;
+              res.json({
+                response: data,
+              });
+            } else {
+              console.log(err2);
             }
           }
         );
@@ -44,10 +43,11 @@ invoceController.getInvoice = async (req, res) => {
 };
 
 invoceController.PostInvoice = async (req, res) => {
-  const { IDClient, Dte, Subtotal, Discount, Total, products } = req.body;
+  console.log(req.body)
+  const { IDClient, Dte, SubTotal, Discout, Total, products } = req.body;
   var queryN1 =
     "INSERT INTO Invoces(IDClient,Dte,Subtotal,Discount,Total) VALUES";
-  queryN1 += `(${IDClient},'${Dte}',${Subtotal},${Discount},${Total})`;
+  queryN1 += `(${IDClient},'${Dte}',${SubTotal},${Discout},${Total})`;
   db.query(queryN1, (err, data) => {
     if (!err) {
       products.forEach((product) => {
@@ -67,8 +67,21 @@ invoceController.PostInvoice = async (req, res) => {
         res: "OK",
       });
     } else {
+      console.log(err)
       res.json({
         res: "FAILED TO SAVE INVOICE",
+      });
+    }
+  });
+};
+
+invoceController.getSubtotal = async (req, res) => {
+  const query = "SELECT * FROM products where Product_ID=";
+  const {id,q}=req.body
+  db.query(query + id, (err, data) => {
+    if (!err) {
+      res.json({
+        cal: data[0].Product_Price*q,
       });
     }
   });
