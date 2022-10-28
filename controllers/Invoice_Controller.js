@@ -1,13 +1,11 @@
 var db = require("../dbConection");
-let invoceController = {};
+let invoiceController = {};
 
-invoceController.getInvoices = async (req, res) => {
+invoiceController.getInvoices = async (req, res) => {
   try {
     db.query("SELECT * FROM Invoces", (err, data) => {
       if (!err) {
-        res.json({
-          response: data,
-        });
+        res.json(data);
       } else {
         res.json({
           res: "ERROR SELECTING INVOCES",
@@ -21,7 +19,7 @@ invoceController.getInvoices = async (req, res) => {
   }
 };
 
-invoceController.getInvoice = async (req, res) => {
+invoiceController.getInvoice = async (req, res) => {
   try {
     db.query(
       "SELECT * FROM Invoces where Invoice_ID=" + req.params["id"],
@@ -32,11 +30,8 @@ invoceController.getInvoice = async (req, res) => {
             (err2, data2) => {
               if (!err2) {
                 data[0].products = data2;
-                res.json({
-                  response: data,
-                });
+                res.json(data);
               } else {
-                console.log(err2);
               }
             }
           );
@@ -54,18 +49,18 @@ invoceController.getInvoice = async (req, res) => {
   }
 };
 
-invoceController.PostInvoice = async (req, res) => {
+invoiceController.PostInvoice = async (req, res) => {
   try {
-    const { IDClient, Dte, SubTotal, Discout, Total, products } = req.body;
+    const { IDClient, Dte, SubTotal, Discount, Total, Products } = req.body;
     var queryN1 =
       "INSERT INTO Invoces(IDClient,Dte,Subtotal,Discount,Total) VALUES";
-    queryN1 += `(${IDClient},'${Dte}',${SubTotal},${Discout},${Total})`;
+    queryN1 += `(${IDClient},'${Dte}',${SubTotal},${Discount},${Total})`;
     db.query(queryN1, (err, data) => {
       if (!err) {
-        products.forEach((product) => {
+        Products.forEach((product) => {
           var queryN2 =
             "INSERT INTO soldproducts(product,quantity,invoiceID)VALUES";
-          queryN2 += `(${product.id},${product.quantity},${data.insertId})`;
+          queryN2 += `(${product.Id},${product.Quantity},${data.insertId})`;
           db.query(queryN2, (err2, data2) => {
             if (err2) {
               res.json({
@@ -78,7 +73,6 @@ invoceController.PostInvoice = async (req, res) => {
           res: "OK",
         });
       } else {
-        console.log(err);
         res.json({
           res: "FAILED TO SAVE INVOICE",
         });
@@ -91,14 +85,18 @@ invoceController.PostInvoice = async (req, res) => {
   }
 };
 
-invoceController.getSubtotal = async (req, res) => {
+invoiceController.getSubtotal = async (req, res) => {
   try {
     const query = "SELECT * FROM products where Product_ID=";
-    const { id, q } = req.body;
-    db.query(query + id, (err, data) => {
+    const { Id, Quantity } = req.body;
+    db.query(query + Id, (err, data) => {
       if (!err) {
         res.json({
-          cal: data[0].Product_Price * q,
+          result: data[0].Product_Price * Quantity,
+        });
+      } else {
+        res.json({
+          error: err,
         });
       }
     });
@@ -109,4 +107,4 @@ invoceController.getSubtotal = async (req, res) => {
   }
 };
 
-module.exports = invoceController;
+module.exports = invoiceController;

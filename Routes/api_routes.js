@@ -23,10 +23,10 @@ router.get("/Products/:id", getProduct);
 router.get("/Clients", getclients);
 router.get("/Clients/:id", getclient);
 
-router.get("/Invoces", getInvoices);
-router.get("/Invoces/:id", getInvoice);
-router.post("/Invoces", PostInvoice);
+router.get("/Invoices", getInvoices);
+router.get("/Invoices/:id", getInvoice);
+router.post("/Invoices", PostInvoice);
 
-router.post("/Invoces/subtotal/", getSubtotal);
+router.post("/Invoices/subtotal/", getSubtotal);
 
 module.exports = router;

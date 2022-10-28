@@ -5,12 +5,8 @@ productController.getProducts = async (req, res) => {
   try {
     db.query("SELECT * FROM products", (err, data) => {
       if (!err) {
-        console.log(data);
-        res.json({
-          res: data,
-        });
+        res.json(data);
       } else {
-        console.log(err);
         res.json({
           error: "Error Selecting Products",
         });
@@ -28,12 +24,8 @@ productController.getProduct = async (req, res) => {
     const query = "SELECT * FROM products where Product_ID=" + req.params["id"];
     db.query(query, (err, data) => {
       if (!err) {
-        // console.log(data);
-        res.json({
-          res: data,
-        });
+        res.json(data);
       } else {
-        // console.log(err);
         res.json({
           error: err,
         });
